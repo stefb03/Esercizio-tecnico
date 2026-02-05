@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+import UserForm from './UserForm.jsx'
+import UserList from './UserList.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/users.php');
+      const result = await response.json();
+
+      if (result.success) {
+        setUsers(result.data);
+        setError('');
+      } else {
+        setError(result.message || 'Errore nel caricamento degli utenti');
+      }
+    } catch (err) {
+      setError('Errore di connessione al server');
+      console.error('Errore:', err);
+    }
+  };
+
+  const handleUserAdded = (newUser) => {
+    setUsers(prevUsers => [...prevUsers, newUser]);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app-container">
+
+      <UserForm onUserAdded={handleUserAdded} />
+
+      <hr className="divider" />
+      {error ? (
+        <div className="error-box">
+          {error}
+        </div>
+      ) : (
+        <UserList users={users} />
+      )}
+    </div>
+  );
 }
 
 export default App

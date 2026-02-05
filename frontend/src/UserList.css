@@ -1,0 +1,25 @@
+.user-list {
+  margin-top: 20px;
+}
+
+.title {
+  margin-bottom: 15px;
+}
+
+.empty-message {
+  font-style: italic;
+  color: #666;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.grid-header {
+  background-color: #646464;
+  font-weight: bold;
+  color: white;
+}
